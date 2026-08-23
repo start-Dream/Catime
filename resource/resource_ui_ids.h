@@ -130,6 +130,7 @@
 #define IDC_HOTKEY_LABEL3 2105           /**< Hotkey label 3 */
 #define IDC_HOTKEY_EDIT3 2106            /**< Hotkey edit control 3 */
 #define CLOCK_IDM_HOTKEY_SETTINGS 5000   /**< Hotkey settings menu item (outside animation range 3000-4000) */
+#define CLOCK_IDM_STATS 5106             /**< Statistics menu item */
 
 /** @brief Additional hotkey control identifiers (4-8) */
 #define IDC_HOTKEY_LABEL4 2109           /**< Hotkey label 4 */

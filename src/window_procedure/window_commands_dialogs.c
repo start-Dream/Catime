@@ -1,4 +1,5 @@
 #include "window_commands_internal.h"
+#include "dialog/dialog_stats.h"
 
 LRESULT CmdOpenWebsite(HWND hwnd, WPARAM wp, LPARAM lp) {
     (void)wp; (void)lp; ShowWebsiteDialog(hwnd); return 0;
@@ -64,6 +65,12 @@ LRESULT CmdFeedback(HWND hwnd, WPARAM wp, LPARAM lp) {
     (void)hwnd; (void)wp; (void)lp;
     extern void OpenFeedbackPage(void);
     OpenFeedbackPage();
+    return 0;
+}
+
+LRESULT CmdStats(HWND hwnd, WPARAM wp, LPARAM lp) {
+    (void)wp; (void)lp;
+    ShowStatsDialog(hwnd);
     return 0;
 }
 

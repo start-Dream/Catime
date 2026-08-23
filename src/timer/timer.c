@@ -7,6 +7,7 @@
  */
 
 #include "timer/timer.h"
+#include "stats/stats.h"
 #include "config.h"
 #include "timer/timer_events.h"
 #include "drawing.h"
@@ -222,6 +223,7 @@ BOOL WriteConfigDefaultStartTime(int seconds) {
 
 /** Fallback to DEFAULT_FALLBACK_TIME if countdown has invalid total time */
 void ResetTimer(void) {
+    Stats_OnSessionEnded();
     int64_t now = GetAbsoluteTimeMs();
 
     if (CLOCK_COUNT_UP) {

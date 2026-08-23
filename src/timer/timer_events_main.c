@@ -4,6 +4,18 @@
  */
 
 #include "timer_events_internal.h"
+#include "stats/stats.h"
+
+static StatsMode GetActiveTimerStatsMode(void) {
+    if (TimerEvents_IsActivePomodoroTimer()) {
+        return (current_pomodoro_time_index % 2 == 0)
+            ? STATS_MODE_POMODORO_WORK
+            : STATS_MODE_POMODORO_BREAK;
+    }
+    if (CLOCK_COUNT_UP) return STATS_MODE_COUNTUP;
+    if (CLOCK_TOTAL_TIME > 0) return STATS_MODE_COUNTDOWN;
+    return STATS_MODE_NONE;
+}
 
 BOOL TimerEvents_ShouldRenderMainTimer(void) {
     g_visibleTimerCurrentText[0] = L'\0';
@@ -48,6 +60,8 @@ BOOL Timer_HasPresentedMainWindowFrame(void) {
 }
 
 void TimerEvents_HandleCountdownCompletion(HWND hwnd) {
+    Stats_OnCountdownCompleted();
+
     BOOL shouldNotify = CLOCK_TIMEOUT_ACTION != TIMEOUT_ACTION_OPEN_FILE &&
                         CLOCK_TIMEOUT_ACTION != TIMEOUT_ACTION_LOCK &&
                         CLOCK_TIMEOUT_ACTION != TIMEOUT_ACTION_SHUTDOWN &&
@@ -102,6 +116,7 @@ static BOOL HandleMainTimer(HWND hwnd) {
     if (CLOCK_SHOW_CURRENT_TIME) {
         last_displayed_second = -1;
         s_hasLastActiveRenderCheckSecond = FALSE;
+        Stats_OnTimerTick(STATS_MODE_NONE, FALSE, 0);
         if (TimerEvents_ShouldRenderMainTimer()) {
             TimerEvents_RequestWindowRepaint(hwnd);
         }
@@ -110,6 +125,7 @@ static BOOL HandleMainTimer(HWND hwnd) {
 
     if (CLOCK_IS_PAUSED) {
         s_hasLastActiveRenderCheckSecond = FALSE;
+        Stats_OnTimerTick(GetActiveTimerStatsMode(), FALSE, 0);
         if (TimerEvents_ShouldRenderMainTimer()) {
             TimerEvents_RequestWindowRepaint(hwnd);
         }
@@ -134,6 +150,11 @@ static BOOL HandleMainTimer(HWND hwnd) {
         if (currentElapsedSec < 0) currentElapsedSec = 0;
         countdown_elapsed_time = currentElapsedSec;
     }
+
+    Stats_OnTimerTick(GetActiveTimerStatsMode(),
+                      CLOCK_COUNT_UP ||
+                          (CLOCK_TOTAL_TIME > 0 && !countdown_message_shown),
+                      currentElapsedSec);
 
     if (!CLOCK_COUNT_UP && CLOCK_TOTAL_TIME > 0 &&
         countdown_elapsed_time >= CLOCK_TOTAL_TIME) {

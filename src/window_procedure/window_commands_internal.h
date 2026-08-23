@@ -85,6 +85,7 @@ LRESULT CmdHelp(HWND hwnd, WPARAM wp, LPARAM lp);
 LRESULT CmdSupport(HWND hwnd, WPARAM wp, LPARAM lp);
 LRESULT CmdVlaina(HWND hwnd, WPARAM wp, LPARAM lp);
 LRESULT CmdFeedback(HWND hwnd, WPARAM wp, LPARAM lp);
+LRESULT CmdStats(HWND hwnd, WPARAM wp, LPARAM lp);
 LRESULT CmdBrowseFile(HWND hwnd, WPARAM wp, LPARAM lp);
 LRESULT CmdResetPosition(HWND hwnd, WPARAM wp, LPARAM lp);
 LRESULT CmdResetDefaults(HWND hwnd, WPARAM wp, LPARAM lp);

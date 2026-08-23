@@ -108,6 +108,10 @@ void ShowColorMenu(HWND hwnd, const POINT* anchor) {
     AppendMenuW(hMenu, MF_SEPARATOR, 0, NULL);
 
     BuildHelpSubmenu(hMenu);
+    AppendMenuW(hMenu, MF_SEPARATOR, 0, NULL);
+    AppendMenuW(hMenu, MF_STRING, CLOCK_IDM_STATS,
+                GetLocalizedString(NULL, L"Statistics"));
+    AppendMenuW(hMenu, MF_SEPARATOR, 0, NULL);
 
     /* Exit */
     AppendMenuW(hMenu, MF_STRING, CLOCK_IDM_EXIT,
@@ -247,6 +251,10 @@ void ShowContextMenu(HWND hwnd, const POINT* anchor) {
         FormatPomodoroTime(time_options[i], menu_item, sizeof(menu_item)/sizeof(wchar_t));
         AppendMenuW(hMenu, MF_STRING, CLOCK_IDM_QUICK_TIME_BASE + i, menu_item);
     }
+
+    AppendMenuW(hMenu, MF_SEPARATOR, 0, NULL);
+    AppendMenuW(hMenu, MF_STRING, CLOCK_IDM_STATS,
+                GetLocalizedString(NULL, L"Statistics"));
 
     POINT pt = ResolveTrayMenuAnchor(hwnd, anchor);
     if (!TrayMenuTracking_ReassertForeground(&tracking)) {

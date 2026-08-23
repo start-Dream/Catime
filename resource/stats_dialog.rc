@@ -1,0 +1,21 @@
+/**
+ * @file stats_dialog.rc
+ * @brief Timer statistics dialog template.
+ *
+ * The dialog chrome (title bar, close button, surface) is drawn by the shared
+ * DialogModern subsystem. The owner-drawn static control hosts the metrics
+ * and the 7-day chart, which are painted in WM_DRAWITEM by dialog_stats.c.
+ */
+#include <windows.h>
+#include "resource.h"
+
+#pragma code_page(65001)
+
+IDD_STATS_DIALOG DIALOGEX 0, 0, 340, 320
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Statistics"
+FONT 9, "Segoe UI"
+BEGIN
+    CONTROL         "", IDC_STATS_CONTENT, "Static", SS_OWNERDRAW, 12, 76, 316, 232
+    PUSHBUTTON      "Period", IDC_STATS_PERIOD, 236, 44, 92, 26
+END

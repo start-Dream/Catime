@@ -7,6 +7,7 @@
 #include <wchar.h>
 
 #include "timer_events_internal.h"
+#include "stats/stats.h"
 
 BOOL TimerEvents_AdvancePomodoroState(void) {
     if (pomodoro_initial_times_count == 0) {
@@ -97,6 +98,7 @@ static void BuildCompletionMessage(wchar_t* completionMsg,
 BOOL TimerEvents_HandlePomodoroCompletion(HWND hwnd) {
     wchar_t completionMsg[256];
     int completedIndex = current_pomodoro_time_index;
+    Stats_OnPomodoroPhaseCompleted(completedIndex);
     int timesCount = pomodoro_initial_times_count;
     int loopCount = pomodoro_initial_loop_count;
 

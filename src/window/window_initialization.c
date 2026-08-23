@@ -14,6 +14,7 @@
 #include "config.h"
 #include "log.h"
 #include "utils/win32_dynamic_loader.h"
+#include "stats/stats.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -207,6 +208,7 @@ static BOOL InitializeDefaultSettings(void) {
     SetConsoleCP(CONSOLE_CODEPAGE_GBK);
 
     ReadConfig();
+    Stats_Initialize();
     CLOCK_FONT_SCALE_FACTOR = CLOCK_WINDOW_SCALE;
 
     if (!IsCiSmokeMode() && !EnsureAutoStart()) {

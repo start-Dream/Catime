@@ -13,6 +13,7 @@
 #include "language.h"
 #include "log.h"
 #include "markdown/markdown_interactive.h"
+#include "stats/stats.h"
 #include "notification.h"
 #include "plugin/plugin_data.h"
 #include "plugin/plugin_manager.h"
@@ -22,6 +23,7 @@
 #include "window/window_visual_effects.h"
 
 void CleanupResources(void) {
+    Stats_Shutdown();
     CleanupMarkdownInteractive();
     CleanupDrawingRenderCache();
     CleanupDrawingEffects();

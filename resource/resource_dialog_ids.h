@@ -152,4 +152,9 @@
 /** @brief Color dialog format help text control */
 #define IDC_COLOR_FORMAT_HELP 767               /**< Color format help text label */
 
+/** @brief Statistics dialog identifiers */
+#define IDD_STATS_DIALOG 780                    /**< Statistics dialog */
+#define IDC_STATS_PERIOD 781                    /**< Period cycle button */
+#define IDC_STATS_CONTENT 782                   /**< Owner-drawn metrics/chart surface */
+
 #endif /* CATIME_RESOURCE_DIALOG_IDS_H */

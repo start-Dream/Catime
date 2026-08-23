@@ -53,6 +53,7 @@ static const CommandDispatchEntry COMMAND_DISPATCH_TABLE[] = {
     {CLOCK_IDM_NOTIFICATION_DISPLAY, CmdNotificationDisplay},
     {CLOCK_IDM_NOTIFICATION_SETTINGS, CmdNotificationSettings},
     {CLOCK_IDM_HOTKEY_SETTINGS, CmdHotkeySettings},
+    {CLOCK_IDM_STATS, CmdStats},
     {CLOCK_IDM_HELP, CmdHelp},
     {CLOCK_IDM_SUPPORT, CmdSupport},
     {CLOCK_IDM_VLAINA, CmdVlaina},
