@@ -8,6 +8,7 @@
 #include "tray/tray_animation_core.h"
 #include "tray/tray.h"
 #include "config.h"
+#include "stats/stats.h"
 #include "timer/timer.h"
 #include "timer/timer_events.h"
 #include "timer/main_timer.h"
@@ -66,6 +67,7 @@ void StartDefaultCountDown(HWND hwnd) {
     }
     if (g_AppConfig.timer.default_start_time > 0) {
         countdown_message_shown = false;
+        Stats_OnCountdownStarting(g_AppConfig.timer.default_start_time);
         TimerModeParams params = {g_AppConfig.timer.default_start_time, TRUE, TRUE, TRUE};  /* showWindow = TRUE */
         SwitchTimerMode(hwnd, TIMER_MODE_COUNTDOWN, &params);
         MainTimer_Stop();
@@ -138,6 +140,7 @@ void CleanupBeforeTimerAction(HWND hwnd) {
 }
 BOOL StartCountdownWithTime(HWND hwnd, int seconds) {
     if (seconds <= 0) return FALSE;
+    Stats_OnCountdownStarting(seconds);
     countdown_message_shown = false;
     if (current_pomodoro_phase != POMODORO_PHASE_IDLE) {
         ResetPomodoroState();

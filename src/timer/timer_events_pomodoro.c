@@ -35,6 +35,10 @@ void ResetPomodoroState(void) {
     memset(pomodoro_initial_times, 0, sizeof(pomodoro_initial_times));
 }
 
+BOOL PomodoroTimeIsStudy(int seconds) {
+    return seconds >= POMODORO_STUDY_MIN_SECONDS;
+}
+
 BOOL TimerEvents_IsActivePomodoroTimer(void) {
     if (current_pomodoro_phase == POMODORO_PHASE_IDLE ||
         pomodoro_initial_times_count == 0 ||
@@ -98,7 +102,7 @@ static void BuildCompletionMessage(wchar_t* completionMsg,
 BOOL TimerEvents_HandlePomodoroCompletion(HWND hwnd) {
     wchar_t completionMsg[256];
     int completedIndex = current_pomodoro_time_index;
-    Stats_OnPomodoroPhaseCompleted(completedIndex);
+    Stats_OnPomodoroPhaseCompleted(pomodoro_initial_times[completedIndex]);
     int timesCount = pomodoro_initial_times_count;
     int loopCount = pomodoro_initial_loop_count;
 

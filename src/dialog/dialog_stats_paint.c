@@ -165,6 +165,73 @@ static void PaintChart(HDC hdc, const DialogModernPalette* palette,
     DeleteObject(smallFont);
 }
 
+static void PaintCategoryStrip(HDC hdc, const DialogModernPalette* palette,
+                           UINT dpi, const RECT* area, const StatsAggregate* agg) {
+    if (!hdc || !area || !agg) return;
+    const wchar_t* labelKeys[3] = { L"Work", L"Study", L"Rest" };
+    const int64_t values[3] = { agg->work_seconds, agg->study_seconds, agg->rest_seconds };
+    const int counts[3] = { agg->work_count, agg->study_count, agg->rest_count };
+    int gap = DialogModern_Scale(dpi, 8);
+    int cardWidth = (area->right - area->left - gap * 2) / 3;
+    int cardHeight = area->bottom - area->top;
+    if (cardWidth < 40 || cardHeight < 20) return;
+
+    HFONT labelFont = DialogModern_CreateFont(dpi, 10, FW_NORMAL);
+    HFONT valueFont = DialogModern_CreateFont(dpi, 15, FW_SEMIBOLD);
+    HFONT countFont = DialogModern_CreateFont(dpi, 9, FW_NORMAL);
+    if (!labelFont || !valueFont || !countFont) {
+        if (labelFont) DeleteObject(labelFont);
+        if (valueFont) DeleteObject(valueFont);
+        if (countFont) DeleteObject(countFont);
+        return;
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        RECT card;
+        card.left = area->left + i * (cardWidth + gap);
+        card.top = area->top;
+        card.right = card.left + cardWidth;
+        card.bottom = area->bottom;
+        DialogModern_DrawRoundedRect(hdc, &card, DialogModern_Scale(dpi, 8),
+                                     palette->surface, palette->border, 1);
+
+        RECT labelRect = card;
+        labelRect.left += DialogModern_Scale(dpi, 10);
+        labelRect.top += DialogModern_Scale(dpi, 6);
+        labelRect.right -= DialogModern_Scale(dpi, 6);
+        labelRect.bottom = labelRect.top + DialogModern_Scale(dpi, 13);
+        DialogModern_DrawText(hdc, labelFont, palette->mutedText, &labelRect,
+                              GetLocalizedString(NULL, labelKeys[i]),
+                              DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+
+        wchar_t valueText[64] = L"0";
+        LocalizedDuration_Format((int)values[i], valueText, _countof(valueText));
+        RECT valueRect = card;
+        valueRect.left += DialogModern_Scale(dpi, 10);
+        valueRect.top += DialogModern_Scale(dpi, 20);
+        valueRect.right -= DialogModern_Scale(dpi, 6);
+        valueRect.bottom = valueRect.top + DialogModern_Scale(dpi, 20);
+        DialogModern_DrawText(hdc, valueFont, palette->text, &valueRect, valueText,
+                              DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+
+        wchar_t countText[48];
+        _snwprintf_s(countText, _countof(countText), _TRUNCATE,
+                     GetLocalizedString(NULL, L"Count: %d"), counts[i]);
+        RECT countRect = card;
+        countRect.left += DialogModern_Scale(dpi, 10);
+        countRect.right -= DialogModern_Scale(dpi, 6);
+        countRect.bottom -= DialogModern_Scale(dpi, 4);
+        countRect.top = countRect.bottom - DialogModern_Scale(dpi, 12);
+        DialogModern_DrawText(hdc, countFont, palette->mutedText,
+                              &countRect, countText,
+                              DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+    }
+
+    DeleteObject(labelFont);
+    DeleteObject(valueFont);
+    DeleteObject(countFont);
+}
+
 void PaintStatsContent(HWND hwndDlg, const DRAWITEMSTRUCT* item) {
     if (!item || item->CtlID != IDC_STATS_CONTENT) return;
 
@@ -211,9 +278,17 @@ void PaintStatsContent(HWND hwndDlg, const DRAWITEMSTRUCT* item) {
     PaintMetrics(item->hDC, &palette, dpi, &cardsArea, metrics,
                  (int)(sizeof(metrics) / sizeof(metrics[0])));
 
+    int catGap = DialogModern_Scale(dpi, 8);
+    RECT catArea;
+    catArea.left = content.left + margin;
+    catArea.top = cardsArea.bottom + catGap;
+    catArea.right = content.right - margin;
+    catArea.bottom = catArea.top + DialogModern_Scale(dpi, 74);
+    PaintCategoryStrip(item->hDC, &palette, dpi, &catArea, &agg);
+
     RECT chartArea;
     chartArea.left = content.left + margin;
-    chartArea.top = cardsArea.bottom + DialogModern_Scale(dpi, 16);
+    chartArea.top = catArea.bottom + catGap;
     chartArea.right = content.right - margin;
     chartArea.bottom = content.bottom - DialogModern_Scale(dpi, 12);
     PaintChart(item->hDC, &palette, dpi, &chartArea);

@@ -13,6 +13,7 @@
 #include "dialog/dialog_language.h"
 #include "language.h"
 #include "timer/timer.h"
+#include "stats/stats.h"
 #include "utils/localized_duration.h"
 #include "utils/string_convert.h"
 #include "log.h"
@@ -28,6 +29,8 @@
 #define INPUT_FOCUS_TIMER_DELAY_MS 50
 #define COUNTDOWN_WINDOW_CLASS_NAME L"CatimeModernCountdownDialog"
 #define COUNTDOWN_CLOSE_BUTTON_ID 0x7F01
+#define COUNTDOWN_CATEGORY_LABEL_ID 0x7F02
+#define COUNTDOWN_CATEGORY_ID 0x7F03
 #define COUNTDOWN_BUTTON_SUBCLASS_ID 0xC710
 #define COUNTDOWN_EDIT_SUBCLASS_ID 0xC711
 #define COUNTDOWN_BASE_WIDTH 500
@@ -58,6 +61,8 @@ typedef struct {
     HWND hwndStart;
     HWND hwndCancel;
     HWND hwndClose;
+    HWND hwndCategoryLabel;
+    HWND hwndCategory;
     HFONT titleFont;
     HFONT bodyFont;
     HFONT smallFont;
@@ -72,6 +77,7 @@ typedef struct {
     BOOL selectAllOnNextFocus;
     BOOL sanitizingInput;
     BOOL titleHovered;
+    StatsCategory category;
     CountdownHoverPart hoverPart;
     CountdownHoverPart pressedPart;
     RECT titleFrame;
@@ -93,6 +99,7 @@ typedef struct {
     wchar_t examples[2048];
     wchar_t startText[64];
     wchar_t cancelText[64];
+    wchar_t categoryLabel[64];
     wchar_t invalidText[256];
     wchar_t previewText[512];
     int exampleColumns;

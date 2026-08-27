@@ -248,8 +248,12 @@ void ShowContextMenu(HWND hwnd, const POINT* anchor) {
     for (int i = 0; i < timeOptionsCount; i++) {
         if (time_options[i] <= 0) continue;
         wchar_t menu_item[20];
+        wchar_t quick_item[40];
         FormatPomodoroTime(time_options[i], menu_item, sizeof(menu_item)/sizeof(wchar_t));
-        AppendMenuW(hMenu, MF_STRING, CLOCK_IDM_QUICK_TIME_BASE + i, menu_item);
+        const wchar_t* typeLabel = TimerTypeLabel(time_options[i]);
+        _snwprintf_s(quick_item, _countof(quick_item), _TRUNCATE,
+                     L"%ls %ls", menu_item, typeLabel);
+        AppendMenuW(hMenu, MF_STRING, CLOCK_IDM_QUICK_TIME_BASE + i, quick_item);
     }
 
     AppendMenuW(hMenu, MF_SEPARATOR, 0, NULL);

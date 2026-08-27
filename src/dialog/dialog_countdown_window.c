@@ -93,6 +93,34 @@ BOOL CountdownCreateControls(HWND hwnd, CountdownDialogState* state) {
         return FALSE;
     }
 
+    BOOL isPomodoro = state->input.dialogId == CLOCK_IDD_POMODORO_TIME_DIALOG;
+    if (!isPomodoro) {
+        state->hwndCategoryLabel = CreateWindowExW(
+            0, L"STATIC", state->categoryLabel,
+            WS_CHILD | WS_VISIBLE,
+            0, 0, 0, 0, hwnd, (HMENU)(INT_PTR)COUNTDOWN_CATEGORY_LABEL_ID,
+            GetModuleHandleW(NULL), NULL);
+        state->hwndCategory = CreateWindowExW(
+            0, L"COMBOBOX", L"",
+            WS_CHILD | WS_VISIBLE | WS_TABSTOP |
+                CBS_DROPDOWNLIST | CBS_HASSTRINGS,
+            0, 0, 0, 0, hwnd, (HMENU)(INT_PTR)COUNTDOWN_CATEGORY_ID,
+            GetModuleHandleW(NULL), NULL);
+        if (state->hwndCategory) {
+            const wchar_t* items[3] = {
+                GetLocalizedString(NULL, L"Work"),
+                GetLocalizedString(NULL, L"Study"),
+                GetLocalizedString(NULL, L"Rest")
+            };
+            for (int i = 0; i < 3; i++) {
+                SendMessageW(state->hwndCategory, CB_ADDSTRING, 0,
+                             (LPARAM)items[i]);
+            }
+            SendMessageW(state->hwndCategory, CB_SETCURSEL, 0, 0);
+            DialogModern_ApplyTheme(state->hwndCategory, state->darkMode);
+        }
+    }
+
     DialogModern_ApplyTheme(hwnd, state->darkMode);
     DialogModern_ApplyTheme(state->hwndEdit, state->darkMode);
 

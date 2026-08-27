@@ -9,6 +9,8 @@
 #ifndef POMODORO_H
 #define POMODORO_H
 
+#include <windows.h>
+
 /**
  * @brief Pomodoro phase states
  */
@@ -22,6 +24,20 @@ typedef enum {
 extern POMODORO_PHASE current_pomodoro_phase;
 extern int current_pomodoro_time_index;
 extern int complete_pomodoro_cycles;
+
+/**
+ * @brief Minimum seconds for a Pomodoro phase to count as study/work.
+ *        Shorter phases are treated as rest/break phases.
+ */
+#define POMODORO_STUDY_MIN_SECONDS 1200 /* 20 minutes */
+
+/**
+ * @brief Whether a Pomodoro phase of the given length is a study/work phase.
+ * @param seconds Phase length in seconds.
+ * @return TRUE for work/study phases (>= POMODORO_STUDY_MIN_SECONDS),
+ *         FALSE for rest/break phases.
+ */
+BOOL PomodoroTimeIsStudy(int seconds);
 
 /**
  * @note InitializePomodoro() declared in timer_events.h

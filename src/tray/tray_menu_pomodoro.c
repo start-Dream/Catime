@@ -44,6 +44,12 @@ static BOOL ParsePositiveSecondsToken(const char* token, int* seconds) {
     return TRUE;
 }
 
+const wchar_t* TimerTypeLabel(int seconds) {
+    return PomodoroTimeIsStudy(seconds)
+        ? GetLocalizedString(NULL, L"Study")
+        : GetLocalizedString(NULL, L"Rest");
+}
+
 static BOOL ParsePomodoroTimeOptions(char* optionsStr, int* parsedOptions,
                                      int* parsedCount) {
     if (!optionsStr || !parsedOptions || !parsedCount) {
@@ -152,6 +158,7 @@ void BuildPomodoroMenu(HMENU hMenu) {
     if (!hPomodoroMenu) return;
 
     wchar_t timeBuffer[64];
+    wchar_t menuItem[96];
 
     AppendMenuW(hPomodoroMenu, MF_STRING, CLOCK_IDM_POMODORO_START,
                 GetLocalizedString(NULL, L"Start"));
@@ -178,8 +185,12 @@ void BuildPomodoroMenu(HMENU hMenu) {
                               !CLOCK_COUNT_UP &&
                               CLOCK_TOTAL_TIME == g_AppConfig.pomodoro.times[i]);
 
+        const wchar_t* typeLabel = TimerTypeLabel(g_AppConfig.pomodoro.times[i]);
+        _snwprintf_s(menuItem, _countof(menuItem), _TRUNCATE,
+                     L"%ls %ls", timeBuffer, typeLabel);
+
         AppendMenuW(hPomodoroMenu, MF_STRING | (isCurrentPhase ? MF_CHECKED : MF_UNCHECKED),
-                    menuId, timeBuffer);
+                    menuId, menuItem);
     }
 
     wchar_t menuText[64];

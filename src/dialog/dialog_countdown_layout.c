@@ -216,6 +216,24 @@ void CountdownLayout(HWND hwnd, CountdownDialogState* state) {
                      SWP_NOZORDER | SWP_NOACTIVATE);
     }
 
+    if (state->hwndCategory) {
+        int comboHeight = CountdownScaleValue(state, 26);
+        int comboWidth = CountdownScaleValue(state, 130);
+        int labelWidth = CountdownScaleValue(state, 72);
+        int rowTop = state->editFrame.top - CountdownScaleValue(state, 27);
+        int comboLeft = state->editFrame.right - comboWidth;
+        int labelLeft = comboLeft - labelWidth - CountdownScaleValue(state, 6);
+        if (labelLeft < state->editFrame.left) labelLeft = state->editFrame.left;
+        if (state->hwndCategoryLabel) {
+            SetWindowPos(state->hwndCategoryLabel, NULL, labelLeft,
+                         rowTop + 2, labelWidth, comboHeight,
+                         SWP_NOZORDER | SWP_NOACTIVATE);
+        }
+        SetWindowPos(state->hwndCategory, NULL, comboLeft, rowTop,
+                     comboWidth, comboHeight,
+                     SWP_NOZORDER | SWP_NOACTIVATE);
+    }
+
     int buttonGap = CountdownScaleValue(state, 10);
     int startWidth = CountdownScaleValue(state, 106);
     int cancelWidth = CountdownScaleValue(state, 88);

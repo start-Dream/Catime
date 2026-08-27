@@ -96,6 +96,8 @@ void CountdownLoadTexts(CountdownDialogState* state) {
                       isPomodoro ? L"Save" : L"Start");
     CountdownCopyText(state->cancelText, _countof(state->cancelText), cancel,
                       L"Cancel");
+    CountdownCopyText(state->categoryLabel, _countof(state->categoryLabel),
+                      GetLocalizedString(NULL, L"Category"), L"Category");
     CountdownCopyText(state->invalidText, _countof(state->invalidText), invalid,
                       L"Invalid input format");
     CountdownCopyEscapedText(
@@ -174,5 +176,8 @@ void CountdownBuildFonts(CountdownDialogState* state) {
     }
     if (state->hwndCancel && state->buttonFont) {
         SendMessageW(state->hwndCancel, WM_SETFONT, (WPARAM)state->buttonFont, TRUE);
+    }
+    if (state->hwndCategory && state->smallFont) {
+        SendMessageW(state->hwndCategory, WM_SETFONT, (WPARAM)state->smallFont, TRUE);
     }
 }

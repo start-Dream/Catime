@@ -36,6 +36,12 @@ typedef struct {
 
 static const StatsFieldMap STATS_FIELDS[] = {
     STATS_FIELD(StatsDayRecord, focus_seconds),
+    STATS_FIELD(StatsDayRecord, work_seconds),
+    STATS_FIELD(StatsDayRecord, study_seconds),
+    STATS_FIELD(StatsDayRecord, rest_seconds),
+    STATS_FIELD(StatsDayRecord, work_count),
+    STATS_FIELD(StatsDayRecord, study_count),
+    STATS_FIELD(StatsDayRecord, rest_count),
     STATS_FIELD(StatsDayRecord, countdown_seconds),
     STATS_FIELD(StatsDayRecord, countdown_completed),
     STATS_FIELD(StatsDayRecord, countup_seconds),
@@ -70,6 +76,9 @@ static void ApplyField(StatsDayRecord* record, const char* key,
         if (strcmp(key, STATS_FIELDS[i].key) != 0) continue;
         void* field = (char*)record + STATS_FIELDS[i].offset;
         if (STATS_FIELDS[i].offset == offsetof(StatsDayRecord, focus_seconds) ||
+            STATS_FIELDS[i].offset == offsetof(StatsDayRecord, work_seconds) ||
+            STATS_FIELDS[i].offset == offsetof(StatsDayRecord, study_seconds) ||
+            STATS_FIELDS[i].offset == offsetof(StatsDayRecord, rest_seconds) ||
             STATS_FIELDS[i].offset == offsetof(StatsDayRecord, countdown_seconds) ||
             STATS_FIELDS[i].offset == offsetof(StatsDayRecord, countup_seconds) ||
             STATS_FIELDS[i].offset == offsetof(StatsDayRecord, pomodoro_work_seconds) ||
@@ -142,6 +151,12 @@ static BOOL WriteRecordsToFile(FILE* file) {
         const StatsDayRecord* rec = StatsStore_GetRecord(i);
         if (fprintf(file, "[%s]\n", rec->date) < 0) return FALSE;
         if (fprintf(file, "FOCUS_SECONDS=%lld\n", (long long)rec->focus_seconds) < 0) return FALSE;
+        if (fprintf(file, "WORK_SECONDS=%lld\n", (long long)rec->work_seconds) < 0) return FALSE;
+        if (fprintf(file, "STUDY_SECONDS=%lld\n", (long long)rec->study_seconds) < 0) return FALSE;
+        if (fprintf(file, "REST_SECONDS=%lld\n", (long long)rec->rest_seconds) < 0) return FALSE;
+        if (fprintf(file, "WORK_COUNT=%d\n", rec->work_count) < 0) return FALSE;
+        if (fprintf(file, "STUDY_COUNT=%d\n", rec->study_count) < 0) return FALSE;
+        if (fprintf(file, "REST_COUNT=%d\n", rec->rest_count) < 0) return FALSE;
         if (fprintf(file, "COUNTDOWN_SECONDS=%lld\n", (long long)rec->countdown_seconds) < 0) return FALSE;
         if (fprintf(file, "COUNTDOWN_COMPLETED=%d\n", rec->countdown_completed) < 0) return FALSE;
         if (fprintf(file, "COUNTUP_SECONDS=%lld\n", (long long)rec->countup_seconds) < 0) return FALSE;

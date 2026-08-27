@@ -26,6 +26,15 @@ typedef enum {
     STATS_MODE_POMODORO_BREAK
 } StatsMode;
 
+
+/** User-facing time category a session is grouped by. */
+typedef enum {
+    STATS_CATEGORY_WORK = 0,   /**< Work */
+    STATS_CATEGORY_STUDY,      /**< Study */
+    STATS_CATEGORY_REST,       /**< Rest */
+    STATS_CATEGORY_COUNT
+} StatsCategory;
+
 /** Aggregation period for statistics queries. */
 typedef enum {
     STATS_PERIOD_TODAY = 0,
@@ -37,6 +46,12 @@ typedef enum {
 /** Aggregated statistics over one period. All values are in seconds. */
 typedef struct {
     int64_t focus_seconds;        /**< Total active seconds (countdown + count-up + Pomodoro work). */
+    int64_t work_seconds;         /**< Active seconds grouped into Work. */
+    int64_t study_seconds;        /**< Active seconds grouped into Study. */
+    int64_t rest_seconds;         /**< Active seconds grouped into Rest. */
+    int work_count;               /**< Active sessions grouped into Work. */
+    int study_count;              /**< Active sessions grouped into Study. */
+    int rest_count;               /**< Active sessions grouped into Rest. */
     int countdown_completed;      /**< Completed countdown sessions. */
     int64_t countup_seconds;      /**< Count-up active seconds. */
     int countup_sessions;         /**< Ended count-up sessions. */
@@ -71,15 +86,38 @@ void Stats_Shutdown(void);
  */
 void Stats_OnTimerTick(StatsMode mode, BOOL active, int elapsedSec);
 
+
+/**
+ * @brief Set the category used for countdown/count-up sessions.
+ * @param category One of STATS_CATEGORY_WORK / STUDY / REST. Invalid values
+ *                 reset to STATS_CATEGORY_WORK. Defaults to Work.
+ *
+ * Called by the UI when a count-down/count-up session is about to start; the
+ * category is captured when the recorder lazily opens the next session.
+ */
+void Stats_SetCountdownCategory(StatsCategory category);
+
+/**
+ * @brief Apply the countdown category just before a countdown session starts.
+ * @param seconds Countdown length in seconds.
+ *
+ * If the UI selected an explicit category (custom countdown dialog), that
+ * choice is kept. Otherwise the category is derived from the duration:
+ * phases at or above POMODORO_STUDY_MIN_SECONDS become Study, shorter phases
+ * become Rest. Called from the countdown start paths.
+ */
+void Stats_OnCountdownStarting(int seconds);
+
 /** Mark the current countdown session as completed. */
 void Stats_OnCountdownCompleted(void);
 
 /**
  * @brief Mark the current Pomodoro phase as completed.
- * @param completedIndex Index of the completed phase in the Pomodoro times
- *                       sequence (even index => work phase, odd => break).
+ * @param phaseSeconds Length in seconds of the completed phase. Phases at or
+ *                     above POMODORO_STUDY_MIN_SECONDS count as work, shorter
+ *                     phases count as break/rest.
  */
-void Stats_OnPomodoroPhaseCompleted(int completedIndex);
+void Stats_OnPomodoroPhaseCompleted(int phaseSeconds);
 
 /** End the current session without completion (reset / mode switch / exit). */
 void Stats_OnSessionEnded(void);

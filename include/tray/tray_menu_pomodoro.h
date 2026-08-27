@@ -36,4 +36,14 @@ void LoadPomodoroConfig(void);
  */
 void BuildPomodoroMenu(HMENU hMenu);
 
+/**
+ * @brief Return localized time type label for a duration
+ * @param seconds Duration in seconds
+ *
+ * @details
+ * Classifies a duration by value: longer focus blocks (>= 20 minutes)
+ * are labeled study, shorter blocks are labeled rest.
+ */
+const wchar_t* TimerTypeLabel(int seconds);
+
 #endif /* TRAY_MENU_POMODORO_H */

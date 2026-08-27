@@ -197,6 +197,10 @@ BOOL CountdownSubmit(HWND hwnd, CountdownDialogState* state) {
         return FALSE;
     }
 
+    if (state->hwndCategory) {
+        Stats_SetCountdownCategory(state->category);
+    }
+
     if (!DialogInput_PersistParsedTime(
             hwnd, state->input.dialogId,
             state->input.pomodoroTimeIndex, totalSeconds)) {

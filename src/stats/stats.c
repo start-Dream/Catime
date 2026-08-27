@@ -58,6 +58,14 @@ void Stats_Shutdown(void) {
     g_initialized = FALSE;
 }
 
+void Stats_SetCountdownCategory(StatsCategory category) {
+    StatsRecorder_SetCountdownCategory(category);
+}
+
+void Stats_OnCountdownStarting(int seconds) {
+    StatsRecorder_OnCountdownStarting(seconds);
+}
+
 void Stats_OnTimerTick(StatsMode mode, BOOL active, int elapsedSec) {
     if (!g_initialized) return;
     StatsRecorder_OnTimerTick(mode, active, elapsedSec);
@@ -76,10 +84,10 @@ void Stats_OnCountdownCompleted(void) {
     Stats_Flush();
 }
 
-void Stats_OnPomodoroPhaseCompleted(int completedIndex) {
+void Stats_OnPomodoroPhaseCompleted(int phaseSeconds) {
     if (!g_initialized) return;
     MarkDirty();
-    StatsRecorder_OnPomodoroPhaseCompleted(completedIndex);
+    StatsRecorder_OnPomodoroPhaseCompleted(phaseSeconds);
     Stats_Flush();
 }
 
@@ -89,6 +97,7 @@ void Stats_OnSessionEnded(void) {
     StatsRecorder_OnSessionEnded();
     Stats_Flush();
 }
+
 BOOL Stats_GetPeriod(StatsPeriod period, StatsAggregate* out) {
     if (!g_initialized) return FALSE;
     return StatsStore_GetPeriod(period, out);

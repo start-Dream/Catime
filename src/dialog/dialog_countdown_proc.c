@@ -60,6 +60,12 @@ LRESULT CALLBACK CountdownDialogProc(HWND hwnd, UINT msg,
             int controlId = LOWORD(wParam);
             int notification = HIWORD(wParam);
             if (!state) break;
+            if (controlId == COUNTDOWN_CATEGORY_ID && notification == CBN_SELCHANGE) {
+                int sel = (int)SendMessageW(state->hwndCategory, CB_GETCURSEL, 0, 0);
+                state->category = (sel == 1) ? STATS_CATEGORY_STUDY :
+                                 (sel == 2) ? STATS_CATEGORY_REST : STATS_CATEGORY_WORK;
+                return 0;
+            }
             if (controlId == CLOCK_IDC_BUTTON_OK &&
                 (notification == BN_CLICKED || notification == 0)) {
                 CountdownSubmit(hwnd, state);

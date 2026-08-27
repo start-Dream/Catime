@@ -9,6 +9,12 @@
 static void AggregateRecord(const StatsDayRecord* rec, StatsAggregate* out) {
     if (!rec || !out) return;
     out->focus_seconds += rec->focus_seconds;
+    out->work_seconds += rec->work_seconds;
+    out->study_seconds += rec->study_seconds;
+    out->rest_seconds += rec->rest_seconds;
+    out->work_count += rec->work_count;
+    out->study_count += rec->study_count;
+    out->rest_count += rec->rest_count;
     out->countdown_completed += rec->countdown_completed;
     out->countup_seconds += rec->countup_seconds;
     out->countup_sessions += rec->countup_sessions;

@@ -8,7 +8,8 @@
 
 static StatsMode GetActiveTimerStatsMode(void) {
     if (TimerEvents_IsActivePomodoroTimer()) {
-        return (current_pomodoro_time_index % 2 == 0)
+        return PomodoroTimeIsStudy(
+                   pomodoro_initial_times[current_pomodoro_time_index])
             ? STATS_MODE_POMODORO_WORK
             : STATS_MODE_POMODORO_BREAK;
     }
